@@ -4,8 +4,8 @@ cd Burpsuite-Professional
 
 # Download Burpsuite Professional
 echo "Downloading Burp Suite Professional Latest..."
-version=2025.5.6
-url="https://portswigger-cdn.net/burp/releases/download?product=pro&type=Jar"
+version=2025
+url="https://portswigger.net/burp/releases/download?product=pro&type=Jar"
 curl -L "$url" -o "burpsuite_pro_v$version.jar"
 
 # Execute Key Generator and Burp Suite Simultaneously
@@ -35,3 +35,19 @@ java --add-opens=java.desktop/javax.swing=ALL-UNNAMED \
      -noverify \
      -jar $(pwd)/burpsuite_pro_v$version.jar &
 EOF
+
+#app bundle
+echo "Creating burpsuitepro app bundle..."
+jpackage --name "Burp Suite Professional" \
+  --input $(pwd) \
+  --main-jar burpsuite_pro_v$version.jar \
+  --type app-image \
+  --icon $(pwd)/burp_suite.icns \
+  --dest ~/Applications/ \
+  --java-options "--add-opens=java.desktop/javax.swing=ALL-UNNAMED" \
+  --java-options "--add-opens=java.base/java.lang=ALL-UNNAMED" \
+  --java-options "--add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED" \
+  --java-options "--add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED" \
+  --java-options "--add-opens=java.base/jdk.internal.org.objectweb.asm.Opcodes=ALL-UNNAMED" \
+  --java-options "-javaagent:$(pwd)/loader.jar" \
+  --java-options "-noverify"
